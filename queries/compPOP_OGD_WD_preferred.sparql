@@ -4,39 +4,41 @@ PREFIX schema: <http://schema.org/>
 PREFIX gn: <http://www.geonames.org/ontology#>
 PREFIX dcterm: <http://purl.org/dc/terms/>
 PREFIX ldgeo:  <https://ld.geo.admin.ch/def/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX p: <http://www.wikidata.org/prop/>
 PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
 PREFIX ps: <http://www.wikidata.org/prop/statement/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX pr: <http://www.wikidata.org/prop/reference/>
 
-select ?name ?OGDPopulation ?OGDDate ?WDPopulation ?WDTime ?popDiff ?ref
-where
-{
-  ?municipality a gn:A.ADM3;
-                schema:name ?name;
-                gn:population ?OGDPopulation;
-                ldgeo:bfsNumber ?bfsNumber;
-                dcterm:issued ?OGDDate .
-  FILTER (?OGDDate = "2017-01-01"^^xsd:date)
-  {
-    SELECT (xsd:integer(?bfs) AS ?bfsNumber) ?WDPopu-lation ?WDTime ?ref WHERE {
- 		SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql>
-		{
-        	?WikidataURI wdt:P771 ?bfs;
-                      p:P1082 ?popStatement.
-            ?popStatement ps:P1082 ?WDPopulation;
-                          pq:P585 ?WDTime;
-                          wikibase:rank ?rank.
-             OPTIONAL {?popStatement prov:wasDerivedFrom ?refnode.
-        				?refnode pr:P854 ?ref.}
-            FILTER REGEX(str(?rank), "http://wikiba.se/ontology#PreferredRank")
-    	}
-  	}
-  }
-  BIND (ROUND(1000 * (?WDPopulation - ?OGDPopulation) / ?OGDPopulation) / 10 as ?popDiff)
+SELECT ?name ?OGDPopulation ?OGDDate ?WDPopulation ?WDTime ?popDiff ?ref WHERE {
+	?municipality a gn:A.ADM3;
+			     schema:name ?name;
+			     gn:population ?OGDPopulation;
+			     ldgeo:bfsNumber ?bfsNumber;
+			     dcterm:issued ?OGDDate.
+	FILTER (?OGDDate = "2017-01-01"^^xsd:date)
+	{
+		SELECT (xsd:integer(?bfs) AS ?bfsNumber) ?WDPopulation ?WDTime ?ref WHERE {
+			
+			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
+				
+				?WikidataURI wdt:P771 ?bfs;
+					     p:P1082 ?popStatement.
+				
+				?popStatement ps:P1082 ?WDPopulation;
+					      pq:P585 ?WDTime;
+					      wikibase:rank ?rank.
+				OPTIONAL {
+					?popStatement prov:wasDerivedFrom ?refnode.
+					?refnode pr:P854 ?ref.
+				}
+				FILTER REGEX(str(?rank), "http://wikiba.se/ontology#PreferredRank")
+			}
+		}
+	}
+	BIND (ROUND(1000 * (?WDPopulation - ?OGDPopulation) / ?OGDPopulation) / 10 as ?popDiff)
 }
 ORDER BY DESC(?OGDPopulation)
 
