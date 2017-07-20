@@ -1,4 +1,10 @@
 ```sparql
+
+#compares population number between official Open Government Data and Wikidata
+#for Wikidata it takes the most current entry, for OGD the ones from 2017-01-01
+
+#used SPARQL endpoint: https://ld.geo.admin.ch/sparql/
+
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
@@ -19,7 +25,6 @@ SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD WHERE {
 		 geonames:population ?popOGD.
 	
 	FILTER (?versionDate = "2017-01-01"^^xsd:date)
-	
 	{
 		SELECT ?wikiURI ?timeWD ?popWD WHERE {
 			
