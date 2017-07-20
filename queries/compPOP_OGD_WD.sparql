@@ -1,4 +1,4 @@
-```sparql
+```
 
 #compares population number between official Open Government Data and Wikidata
 #for Wikidata it takes the most current entry, for OGD the ones from 2017-01-01
