@@ -1,0 +1,45 @@
+```
+
+PREFIX schema: <http://schema.org/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+PREFIX dcterm: <http://purl.org/dc/terms/>
+PREFIX ldgeo:  <https://ld.geo.admin.ch/def/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select *
+where
+{
+  ?Municipality a gn:A.ADM3;
+                schema:name ?Name;
+                ldgeo:bfsNumber ?bfsNumber;
+                gn:population ?Population;
+                dcterm:issued ?Date;
+                geo:hasGeometry ?Geometry.
+  ?Geometry geo:asWKT ?Coords  .
+  FILTER (?Date = "2017-01-01"^^xsd:date)
+  {
+    SELECT (xsd:integer(?bfs) AS ?bfsNumber) (xsd:string(?flagLink) AS ?flag) ?MayorLabel ?polPartyLabel WHERE {
+ 		SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql>
+		{
+        	?WikidataURI wdt:P771 ?bfs;
+                     	 wdt:P6 ?Mayor;
+        				 wdt:P94 ?flagLink .
+        	?Mayor rdfs:label ?MayorLabel;
+                wdt:P102 ?polParty.
+        	?polParty rdfs:label ?polPartyLabel
+        
+        	FILTER (lang(?MayorLabel) = "en")
+        FILTER (lang(?polPartyLabel) = "en")
+        
+ 
+    	}
+  	}
+    
+  }
+  BIND (CONCAT(?Name, "<br>Mayor: ", ?MayorLabel, "<br>Party: ", ?polPartyLabel, "<br><a href='", ?flag, "' target='_blank'>Flag</a>") AS ?CoordsLabel)
+}
+ORDER BY DESC(?Population)
+
+```    
