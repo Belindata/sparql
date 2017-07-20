@@ -1,47 +1,44 @@
 ```
 
 PREFIX schema: <http://schema.org/>
-PREFIX gn: <http://www.geonames.org/ontology#>
-PREFIX dcterm: <http://purl.org/dc/terms/>
+PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX ldgeo:  <https://ld.geo.admin.ch/def/>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
 
 SELECT * WHERE {
+	?muni schema:name ?muniName;
+	      rdfs:seeAlso ?wikiURI;
+	      dct:hasVersion ?version.
+  
+     	?version dct:issued ?versionDate;
+		 geo:hasGeometry ?geometry.
 	
-	?Municipality a gn:A.ADM3;
-		schema:name ?Name;
-                ldgeo:bfsNumber ?bfsNumber;
-                gn:population ?Population;
-                dcterm:issued ?Date;
-                geo:hasGeometry ?Geometry.
+	?geometry geo:asWKT ?coords.
 	
-	?Geometry geo:asWKT ?Coords.
-	
-	FILTER (?Date = "2017-01-01"^^xsd:date)
+	FILTER (?versionDate = "2017-01-01"^^xsd:date)
 	{
-		SELECT (xsd:integer(?bfs) AS ?bfsNumber) (xsd:string(?flagLink) AS ?flag) ?MayorLabel ?polPartyLabel WHERE {
+		SELECT ?wikiURI (xsd:string(?flagLink) AS ?flag) ?mayorLabel ?polPartyLabel WHERE {
 			
 			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
 				
-				?WikidataURI wdt:P771 ?bfs;
-					     wdt:P6 ?Mayor;
+				?wikiURI wdt:P31 wd:Q70208;
+					     wdt:P6 ?mayor;
 					     wdt:P94 ?flagLink.
 				
-				?Mayor rdfs:label ?MayorLabel;
+				?mayor rdfs:label ?mayorLabel;
 				       wdt:P102 ?polParty.
 				
 				?polParty rdfs:label ?polPartyLabel.
 				
-				FILTER (lang(?MayorLabel) = "en")
+				FILTER (lang(?mayorLabel) = "en")
 				FILTER (lang(?polPartyLabel) = "en")
 			}
 		}
 	}
-	BIND (CONCAT(?Name, "<br>Mayor: ", ?MayorLabel, "<br>Party: ", ?polPartyLabel, "<br><a href='", ?flag, "' target='_blank'>Flag</a>") AS ?CoordsLabel)
+	BIND (CONCAT(?muniName, "<br>Mayor: ", ?mayorLabel, "<br>Party: ", ?polPartyLabel, "<br><a href='", ?flag, "' target='_blank'>Flag</a>") AS ?coordsLabel)
 }
-ORDER BY DESC(?Population)
 
-```    
+```
