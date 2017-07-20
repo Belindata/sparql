@@ -1,46 +1,47 @@
 ```sparql
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX wd: <http://www.wikidata.org/entity/>
-PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 PREFIX p: <http://www.wikidata.org/prop/>
 PREFIX ps: <http://www.wikidata.org/prop/statement/>
 PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX schema: <http://schema.org/>
 
 SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD WHERE {
-  
-  ?muni <http://schema.org/name> ?muniName;
-        rdfs:seeAlso ?wikiURI;
-        dct:hasVersion ?version.
-  ?version dct:issued ?versionDate;
-           geonames:population ?popOGD.
-  
-  FILTER (?versionDate = "2017-01-01"^^xsd:date)
-  	
-  {
-    SELECT ?wikiURI ?timeWD ?popWD WHERE {
-		SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
-  			?wikiURI p:P1082 ?popWDStatement.
-  			?popWDStatement ps:P1082 ?popWD;
-                     pq:P585 ?timeWD.
-  
-			{
-              SELECT ?wikiURI (max(?timeWDAll) AS ?timeWD) WHERE {
-              	?wikiURI wdt:P31 wd:Q70208;
-                         p:P1082 ?popWDStatement.
-                ?popWDStatement pq:P585 ?timeWDAll.
-			  }
-			  GROUP BY ?wikiURI
+	
+	?muni schema:name ?muniName;
+	      rdfs:seeAlso ?wikiURI;
+	      dct:hasVersion ?version.
+	
+	?version dct:issued ?versionDate;
+		 geonames:population ?popOGD.
+	
+	FILTER (?versionDate = "2017-01-01"^^xsd:date)
+	
+	{
+		SELECT ?wikiURI ?timeWD ?popWD WHERE {
+			
+			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
+				
+				?wikiURI p:P1082 ?popWDStatement.
+				
+				?popWDStatement ps:P1082 ?popWD;
+						pq:P585 ?timeWD.
+				{
+					SELECT ?wikiURI (max(?timeWDAll) AS ?timeWD) WHERE {
+						
+						?wikiURI wdt:P31 wd:Q70208;
+							 p:P1082 ?popWDStatement.
+						
+						?popWDStatement pq:P585 ?timeWDAll.
+					}
+					GROUP BY ?wikiURI
+				}
 			}
 		}
-  	}
-  }
+	}
 }
 ORDER BY ?muniName
 ```
