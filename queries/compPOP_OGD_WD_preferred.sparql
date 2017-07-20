@@ -1,5 +1,11 @@
 ```
 
+#compares population number between official Open Government Data and Wikidata
+#for Wikidata it takes the entry with the preferred rank, for OGD the ones from 2017-01-01
+#the "primary key" for the two datasets is the bfs number (and not relly a "linking")
+
+#used SPARQL endpoint: https://ld.geo.admin.ch/sparql/
+
 PREFIX schema: <http://schema.org/>
 PREFIX gn: <http://www.geonames.org/ontology#>
 PREFIX dcterm: <http://purl.org/dc/terms/>
