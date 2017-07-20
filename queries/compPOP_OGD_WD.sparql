@@ -6,14 +6,14 @@
 #used SPARQL endpoint: https://ld.geo.admin.ch/sparql/
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX schema: <http://schema.org/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX p: <http://www.wikidata.org/prop/>
 PREFIX ps: <http://www.wikidata.org/prop/statement/>
 PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
-PREFIX schema: <http://schema.org/>
 
 SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD WHERE {
 	
