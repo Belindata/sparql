@@ -30,7 +30,8 @@ SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD WHERE {
 			
 			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
 				
-				?wikiURI p:P1082 ?popWDStatement.
+				?wikiURI wdt:P31 wd:Q70208; #important for performance
+					 p:P1082 ?popWDStatement.
 				
 				?popWDStatement ps:P1082 ?popWD;
 						pq:P585 ?timeWD.
