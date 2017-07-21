@@ -3,6 +3,8 @@
 #compares population number between official Open Government Data and Wikidata
 #for Wikidata it takes the most current entry, for OGD the ones from 2017-01-01
 
+#got help from Stanislav Kralin: https://stackoverflow.com/questions/45210878/how-to-project-additional-variables-from-sparql-aggregates
+
 #used SPARQL endpoint: https://ld.geo.admin.ch/sparql/
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
