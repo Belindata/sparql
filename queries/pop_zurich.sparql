@@ -1,5 +1,9 @@
 ```
 
+#population developtment for Zurich
+
+#used SPARQL endpoint: https://query.wikidata.org/
+
 SELECT ?time ?population ?refnode WHERE {
   BIND (wd:Q72 as ?Zurich)
   ?Zurich p:P1082 ?popStatement.
