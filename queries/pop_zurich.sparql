@@ -1,0 +1,11 @@
+```
+
+SELECT ?time ?population ?refnode WHERE {
+  BIND (wd:Q72 as ?Zurich)
+  ?Zurich p:P1082 ?popStatement.
+  ?popStatement ps:P1082 ?population;
+                pq:P585 ?time.
+  OPTIONAL {?popStatement prov:wasDerivedFrom ?refnode.}
+}
+
+```
