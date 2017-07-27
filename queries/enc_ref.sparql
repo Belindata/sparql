@@ -1,5 +1,10 @@
 ```
 
+#returns the number of statements which have a reference to
+#something which is a encyclopedia or a reference work
+
+#used SPARQL endpoint: https://query.wikidata.org
+
 SELECT ?enc (COUNT(?enc) as ?count) WHERE {
   ?s ?o ?p.
   ?p prov:wasDerivedFrom ?refnode.
