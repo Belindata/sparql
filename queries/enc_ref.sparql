@@ -1,0 +1,13 @@
+```
+
+SELECT ?enc (COUNT(?enc) as ?count) WHERE {
+  ?s ?o ?p.
+  ?p prov:wasDerivedFrom ?refnode.
+  ?refnode pr:P248 ?enc.
+  {?enc wdt:P31 wd:Q5292.}
+  UNION
+  {?enc wdt:P136 wd:Q13136.}
+}
+GROUP BY ?enc
+
+```
