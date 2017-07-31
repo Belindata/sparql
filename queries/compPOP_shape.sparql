@@ -25,11 +25,10 @@ SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD ?coords WHERE {
 	
 	?version dct:issued ?versionDate;
 		 geonames:population ?popOGD;
-      geo:hasGeometry ?geometry.
+		 geo:hasGeometry ?geometry.
   
   	?geometry geo:asWKT ?coords.
 
-	
 	FILTER (?versionDate = "2017-01-01"^^xsd:date)
 	{
 		SELECT ?wikiURI ?timeWD ?popWD WHERE {
