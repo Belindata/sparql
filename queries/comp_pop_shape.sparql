@@ -1,0 +1,53 @@
+```
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX schema: <http://schema.org/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT ?muniName ?popOGD ?versionDate ?popWD ?timeWD ?coords WHERE {
+	
+	?muni schema:name ?muniName;
+	      rdfs:seeAlso ?wikiURI;
+	      dct:hasVersion ?version.
+	
+	?version dct:issued ?versionDate;
+		 geonames:population ?popOGD;
+      geo:hasGeometry ?geometry.
+  
+  	?geometry geo:asWKT ?coords.
+
+	
+	FILTER (?versionDate = "2017-01-01"^^xsd:date)
+	{
+		SELECT ?wikiURI ?timeWD ?popWD WHERE {
+			
+			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {
+				
+				?wikiURI wdt:P31 wd:Q70208; #important for performance
+					 p:P1082 ?popWDStatement.
+				
+				?popWDStatement ps:P1082 ?popWD;
+						pq:P585 ?timeWD.
+				{
+					SELECT ?wikiURI (max(?timeWDAll) AS ?timeWD) WHERE {
+						
+						?wikiURI wdt:P31 wd:Q70208;
+							 p:P1082 ?popWDStatement.
+						
+						?popWDStatement pq:P585 ?timeWDAll.
+					}
+					GROUP BY ?wikiURI
+				}
+			}
+		}
+	}
+}
+
+```
