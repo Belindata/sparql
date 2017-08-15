@@ -1,0 +1,17 @@
+```
+
+PREFIX schema: <http://schema.org/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+SELECT ?AdminUnit ?Name
+WHERE {
+  ?AdminUnit a ?type .
+  ?AdminUnit geo:hasGeometry ?Geometry .
+  ?AdminUnit schema:name ?Name .
+  ?Geometry geo:asWKT ?Coords .
+  ?AdminUnit <http://purl.org/dc/terms/issued> ?Date .
+  FILTER (?type IN (<http://www.geonames.org/ontology#A.ADM1>,<http://www.geonames.org/ontology#A.ADM2>,<http://www.geonames.org/ontology#A.ADM3>)) 
+  FILTER (bif:st_contains (?Coords, bif:st_point (7.43, 46.95)))
+  FILTER (?Date = "2016-01-01"^^xsd:date)
+}
+
+```
